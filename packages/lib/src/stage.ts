@@ -1,7 +1,7 @@
 import { Stage as CDKStage } from "aws-cdk-lib";
 import { Construct } from "constructs";
 
-interface StageProps {
+export interface StageProps {
   create(scope: Construct): void;
 }
 

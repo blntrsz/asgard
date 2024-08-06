@@ -4,11 +4,13 @@ import {
   Pipeline as CPipeline,
 } from "aws-cdk-lib/aws-codepipeline";
 import { Construct } from "constructs";
-import { Stage } from "./stage";
+import { Stage, StageProps } from "./stage";
 import { App, AppProps, Stack, StackProps } from "aws-cdk-lib";
+import { getProjectName } from "./utils/get-project-name";
+import { Queue } from "aws-cdk-lib/aws-sqs";
 
 export type ApplicationProps = {
-  create(scope: Construct): void;
+  create: StageProps["create"];
   synth: ShellStep;
 };
 
@@ -17,6 +19,8 @@ export type PipelineProps = ApplicationProps & StackProps;
 export class Pipeline extends Stack {
   constructor(scope: Construct, id: string, props: PipelineProps) {
     super(scope, id, props);
+
+    new Queue(this, "global-dlq");
 
     const rawPipeline = new CPipeline(this, "raw-pipeline", {
       pipelineType: PipelineType.V2,
@@ -37,8 +41,10 @@ export class Pipeline extends Stack {
       synth: props.synth,
     });
 
+    const projectName = getProjectName(this);
+
     pipeline.addStage(
-      new Stage(this, "stage", {
+      new Stage(this, projectName, {
         create: props.create,
       }),
     );
