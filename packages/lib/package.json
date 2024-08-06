@@ -1,0 +1,20 @@
+{
+  "name": "@asgard/lib",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "rm -rf types/* && tsc  --noEmit false --emitDeclarationOnly true && cp src/*.d.ts types"
+  },
+  "main": "./src/index.ts",
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "20.14.2",
+    "aws-cdk": "2.147.0",
+    "typescript": "~5.4.5"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.147.0",
+    "constructs": "^10.0.0",
+    "source-map-support": "^0.5.21"
+  }
+}
