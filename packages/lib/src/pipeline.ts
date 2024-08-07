@@ -22,7 +22,7 @@ import {
   getMainBranch,
 } from "./utils/get-context";
 import { getScope } from "./utils/get-scope";
-import { PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { PolicyStatement, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 
 /**
  * Props fro the Asgard Application
@@ -93,18 +93,23 @@ class Pipeline extends Construct {
     const isDev = props.isDev ?? false;
     const projectName = getProjectName(this);
 
-    const rawPipeline = new CPipeline(this, "raw-pipeline", {
-      pipelineType: PipelineType.V2,
-      pipelineName: `${projectName}-pipeline-${isDev ? "dev" : "main"}`,
-      executionMode: ExecutionMode.PARALLEL,
+    const role = new Role(this, "pipeline-role", {
+      assumedBy: new ServicePrincipal("codebuild.amazonaws.com"),
     });
-    rawPipeline.addToRolePolicy(
-      // TODO: make it more strict
+
+    role.addToPolicy(
       new PolicyStatement({
         actions: ["*"],
         resources: ["*"],
       }),
     );
+
+    const rawPipeline = new CPipeline(this, "raw-pipeline", {
+      role,
+      pipelineType: PipelineType.V2,
+      pipelineName: `${projectName}-pipeline-${isDev ? "dev" : "main"}`,
+      executionMode: ExecutionMode.PARALLEL,
+    });
 
     if (isDev) {
       rawPipeline.addTrigger({
@@ -169,23 +174,25 @@ class Pipeline extends Construct {
       });
     }
 
+    const synth = new ShellStep("synth", {
+      primaryOutputDirectory: "packages/app/cdk.out",
+      input: CodePipelineSource.connection(
+        getRepositoryName(this),
+        getMainBranch(this),
+        {
+          actionName: ACTION_NAME,
+          triggerOnPush: true,
+          connectionArn: getConnectionArn(this),
+        },
+      ),
+      installCommands: props.installCommands,
+      commands: props.commands,
+    });
+
     const pipeline = new CodePipeline(this, "pipeline", {
       codePipeline: rawPipeline,
       selfMutation: true,
-      synth: new ShellStep("synth", {
-        primaryOutputDirectory: "packages/app/cdk.out",
-        input: CodePipelineSource.connection(
-          getRepositoryName(this),
-          getMainBranch(this),
-          {
-            actionName: ACTION_NAME,
-            triggerOnPush: true,
-            connectionArn: getConnectionArn(this),
-          },
-        ),
-        installCommands: props.installCommands,
-        commands: props.commands,
-      }),
+      synth,
     });
 
     pipeline.addStage(
