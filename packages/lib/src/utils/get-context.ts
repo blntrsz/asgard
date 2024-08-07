@@ -25,7 +25,3 @@ export const getMainBranch = (scope: Construct): string => {
 export const getConnectionArn = (scope: Construct): string => {
   return getContextParameter(scope, "connectionArn");
 };
-
-export const getScope = (scope: Construct): string => {
-  return getContextParameter(scope, "scope");
-};

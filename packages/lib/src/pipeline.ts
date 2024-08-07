@@ -21,6 +21,8 @@ import {
   getRepositoryName,
   getMainBranch,
 } from "./utils/get-context";
+import { getScope } from "./utils/get-scope";
+import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 
 /**
  * Props fro the Asgard Application
@@ -38,14 +40,14 @@ export class AsgardApp extends App {
   constructor(props: AppProps & ApplicationProps) {
     super(props);
 
-    const isRunningInCodeBuild = process.env.CODEBUILD_CI;
-
+    const scope = getScope(this);
     const projectName = getProjectName(this);
 
-    this.node.setContext("scope", "pr-1");
-
-    new DevPipeline(this, `${projectName}-pipeline-dev`, props);
-    new MainPipeline(this, `${projectName}-pipeline-main`, props);
+    if (scope) {
+      new DevPipeline(this, `${projectName}-pipeline-dev`, props);
+    } else {
+      new MainPipeline(this, `${projectName}-pipeline-main`, props);
+    }
   }
 }
 
@@ -96,6 +98,13 @@ class Pipeline extends Construct {
       pipelineName: `${projectName}-pipeline-${isDev ? "dev" : "main"}`,
       executionMode: ExecutionMode.PARALLEL,
     });
+    rawPipeline.addToRolePolicy(
+      // TODO: make it more strict
+      new PolicyStatement({
+        actions: ["*"],
+        resources: ["*"],
+      }),
+    );
 
     if (isDev) {
       rawPipeline.addTrigger({
