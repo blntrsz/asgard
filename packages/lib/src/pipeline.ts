@@ -2,12 +2,12 @@ import { CodePipeline, ShellStep } from "aws-cdk-lib/pipelines";
 import {
   PipelineType,
   Pipeline as CPipeline,
+  ExecutionMode,
 } from "aws-cdk-lib/aws-codepipeline";
 import { Construct } from "constructs";
 import { Stage, StageProps } from "./stage";
 import { App, AppProps, Stack, StackProps } from "aws-cdk-lib";
 import { getProjectName } from "./utils/get-project-name";
-import { Queue } from "aws-cdk-lib/aws-sqs";
 
 export type ApplicationProps = {
   create: StageProps["create"];
@@ -20,19 +20,12 @@ export class Pipeline extends Stack {
   constructor(scope: Construct, id: string, props: PipelineProps) {
     super(scope, id, props);
 
-    new Queue(this, "global-dlq");
+    const projectName = getProjectName(this);
 
     const rawPipeline = new CPipeline(this, "raw-pipeline", {
       pipelineType: PipelineType.V2,
-      // triggers: [
-      //   {
-      //     gitConfiguration: {
-      //       sourceAction: {
-      //         actionProperties
-      //       }
-      //     },
-      //   },
-      // ],
+      pipelineName: `${projectName}-pipeline`,
+      executionMode: ExecutionMode.PARALLEL,
     });
 
     const pipeline = new CodePipeline(this, "pipeline", {
@@ -40,8 +33,6 @@ export class Pipeline extends Stack {
       selfMutation: true,
       synth: props.synth,
     });
-
-    const projectName = getProjectName(this);
 
     pipeline.addStage(
       new Stage(this, projectName, {
