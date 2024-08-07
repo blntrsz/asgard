@@ -38,15 +38,20 @@ export class AsgardApp extends App {
   constructor(props: AppProps & ApplicationProps) {
     super(props);
 
+    const isRunningInCodeBuild = process.env.CODEBUILD_CI;
+
     const projectName = getProjectName(this);
 
-    new Pipelines(this, `${projectName}-pipeline`, props);
+    this.node.setContext("scope", "pr-1");
+
+    new DevPipeline(this, `${projectName}-pipeline-dev`, props);
+    new MainPipeline(this, `${projectName}-pipeline-main`, props);
   }
 }
 
 const ACTION_NAME = "pipeline_pr_action";
 
-export class Pipelines extends Stack {
+export class MainPipeline extends Stack {
   constructor(
     scope: Construct,
     id: string,
@@ -55,6 +60,17 @@ export class Pipelines extends Stack {
     super(scope, id, props);
 
     new Pipeline(this, "main-pipeline", props);
+  }
+}
+
+export class DevPipeline extends Stack {
+  constructor(
+    scope: Construct,
+    id: string,
+    props: ApplicationProps & StackProps,
+  ) {
+    super(scope, id, props);
+
     new Pipeline(this, "dev-pipeline", {
       ...props,
       isDev: true,
