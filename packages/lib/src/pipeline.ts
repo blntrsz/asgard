@@ -1,7 +1,7 @@
 import {
-  CodeBuildStep,
   CodePipeline,
   CodePipelineSource,
+  ShellStep,
 } from "aws-cdk-lib/pipelines";
 import {
   PipelineType,
@@ -21,7 +21,6 @@ import {
   getRepositoryName,
   getMainBranch,
 } from "./utils/get-context";
-import { PolicyStatement, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { getPipelineConfig } from "./utils/get-pipeline-config";
 
 /**
@@ -66,17 +65,6 @@ class Pipeline extends Stack {
     const isDev = props.isDev ?? false;
     const projectName = getProjectName(this);
 
-    const role = new Role(this, "pipeline-role", {
-      assumedBy: new ServicePrincipal("codebuild.amazonaws.com"),
-    });
-
-    role.addToPolicy(
-      new PolicyStatement({
-        actions: ["*"],
-        resources: ["*"],
-      }),
-    );
-
     const rawPipeline = new CPipeline(this, "raw-pipeline", {
       pipelineType: PipelineType.V2,
       pipelineName: props.name,
@@ -117,12 +105,9 @@ class Pipeline extends Stack {
       });
     }
 
-    const synth = new CodeBuildStep("synth", {
+    const synth = new ShellStep("synth", {
       commands: props.commands,
       installCommands: props.installCommands,
-      env: {
-        "git-credential-helper": "yes",
-      },
       primaryOutputDirectory: "packages/app/cdk.out",
       input: CodePipelineSource.connection(
         getRepositoryName(this),
@@ -134,7 +119,6 @@ class Pipeline extends Stack {
           connectionArn: getConnectionArn(this),
         },
       ),
-      role,
     });
 
     const pipeline = new CodePipeline(this, "pipeline", {
