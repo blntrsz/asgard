@@ -1,10 +1,11 @@
 import { execSync } from "child_process";
 import { Construct } from "constructs";
+import { getProjectName } from "./get-context";
 
-export function getScope(scope?: Construct): number | undefined {
+export function getScope(scope: Construct): number | undefined {
   const contextScope = scope ? scope.node.tryGetContext("scope") : undefined;
-
   if (contextScope) return Number(contextScope);
+
   if (!process.env.CODEBUILD_BUILD_ID) {
     // not running in codebuild
     return undefined;
@@ -16,6 +17,9 @@ export function getScope(scope?: Construct): number | undefined {
     "codepipeline/",
     "",
   );
+
+  const projectName = getProjectName(scope);
+  if (codepipeline === `${projectName}-pipeline-main`) return undefined;
 
   const getActions = execSync(
     `aws codepipeline list-action-executions --pipeline-name ${codepipeline}`,
