@@ -115,7 +115,6 @@ class Pipeline extends Stack {
         {
           actionName: ACTION_NAME,
           triggerOnPush: !isDev,
-          codeBuildCloneOutput: true,
           connectionArn: getConnectionArn(this),
         },
       ),
