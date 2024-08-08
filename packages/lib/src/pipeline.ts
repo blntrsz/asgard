@@ -1,7 +1,7 @@
 import {
+  CodeBuildStep,
   CodePipeline,
   CodePipelineSource,
-  ShellStep,
 } from "aws-cdk-lib/pipelines";
 import {
   PipelineType,
@@ -21,6 +21,8 @@ import {
   getRepositoryName,
   getMainBranch,
 } from "./utils/get-context";
+import { getScope } from "./utils/get-scope";
+import { PolicyStatement, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 
 /**
  * Props fro the Asgard Application
@@ -38,15 +40,20 @@ export class AsgardApp extends App {
   constructor(props: AppProps & ApplicationProps) {
     super(props);
 
+    const scope = getScope(this);
     const projectName = getProjectName(this);
 
-    new Pipelines(this, `${projectName}-pipeline`, props);
+    if (scope) {
+      new DevPipeline(this, `${projectName}-pipeline-dev`, props);
+    } else {
+      new MainPipeline(this, `${projectName}-pipeline-main`, props);
+    }
   }
 }
 
 const ACTION_NAME = "pipeline_pr_action";
 
-export class Pipelines extends Stack {
+export class MainPipeline extends Stack {
   constructor(
     scope: Construct,
     id: string,
@@ -55,6 +62,17 @@ export class Pipelines extends Stack {
     super(scope, id, props);
 
     new Pipeline(this, "main-pipeline", props);
+  }
+}
+
+export class DevPipeline extends Stack {
+  constructor(
+    scope: Construct,
+    id: string,
+    props: ApplicationProps & StackProps,
+  ) {
+    super(scope, id, props);
+
     new Pipeline(this, "dev-pipeline", {
       ...props,
       isDev: true,
@@ -74,6 +92,17 @@ class Pipeline extends Construct {
 
     const isDev = props.isDev ?? false;
     const projectName = getProjectName(this);
+
+    const role = new Role(this, "pipeline-role", {
+      assumedBy: new ServicePrincipal("codebuild.amazonaws.com"),
+    });
+
+    role.addToPolicy(
+      new PolicyStatement({
+        actions: ["*"],
+        resources: ["*"],
+      }),
+    );
 
     const rawPipeline = new CPipeline(this, "raw-pipeline", {
       pipelineType: PipelineType.V2,
@@ -144,23 +173,26 @@ class Pipeline extends Construct {
       });
     }
 
+    const synth = new CodeBuildStep("synth", {
+      commands: props.commands,
+      installCommands: props.installCommands,
+      primaryOutputDirectory: "packages/app/cdk.out",
+      input: CodePipelineSource.connection(
+        getRepositoryName(this),
+        getMainBranch(this),
+        {
+          actionName: ACTION_NAME,
+          triggerOnPush: true,
+          connectionArn: getConnectionArn(this),
+        },
+      ),
+      role,
+    });
+
     const pipeline = new CodePipeline(this, "pipeline", {
       codePipeline: rawPipeline,
       selfMutation: true,
-      synth: new ShellStep("synth", {
-        primaryOutputDirectory: "packages/app/cdk.out",
-        input: CodePipelineSource.connection(
-          getRepositoryName(this),
-          getMainBranch(this),
-          {
-            actionName: ACTION_NAME,
-            triggerOnPush: true,
-            connectionArn: getConnectionArn(this),
-          },
-        ),
-        installCommands: props.installCommands,
-        commands: props.commands,
-      }),
+      synth,
     });
 
     pipeline.addStage(
