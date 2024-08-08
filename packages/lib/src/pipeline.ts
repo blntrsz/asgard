@@ -141,36 +141,6 @@ class Pipeline extends Construct {
           ],
         },
       });
-    } else {
-      rawPipeline.addTrigger({
-        providerType: ProviderType.CODE_STAR_SOURCE_CONNECTION,
-        gitConfiguration: {
-          sourceAction: {
-            actionProperties: {
-              artifactBounds: {
-                minOutputs: 0,
-                maxOutputs: 1,
-                minInputs: 0,
-                maxInputs: 1,
-              },
-              category: ActionCategory.BUILD,
-              provider: "CodeStarSourceConnection",
-              actionName: ACTION_NAME,
-            },
-            bind() {
-              return {};
-            },
-            onStateChange() {
-              return new Rule(this, "rule");
-            },
-          },
-          pushFilter: [
-            {
-              tagsIncludes: ["*"],
-            },
-          ],
-        },
-      });
     }
 
     const synth = new CodeBuildStep("synth", {
@@ -182,7 +152,7 @@ class Pipeline extends Construct {
         getMainBranch(this),
         {
           actionName: ACTION_NAME,
-          triggerOnPush: true,
+          triggerOnPush: !isDev,
           connectionArn: getConnectionArn(this),
         },
       ),
