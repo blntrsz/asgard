@@ -5,12 +5,7 @@ import { ApiStack } from "../stacks/api-stack";
 import { SpaStack } from "../stacks/spa-stack";
 
 new AsgardApp({
-  installCommands: [
-    "git status",
-    "git branch --show-current",
-    "npm i -g pnpm",
-    "pnpm i",
-  ],
+  installCommands: ["npm i -g pnpm", "pnpm i"],
   commands: ["cd ./packages/app/", "pnpm cdk synth"],
   create(scope, getScopedName) {
     new ApiStack(scope, "api", {
