@@ -107,7 +107,7 @@ class Pipeline extends Construct {
     const rawPipeline = new CPipeline(this, "raw-pipeline", {
       pipelineType: PipelineType.V2,
       pipelineName: `${projectName}-pipeline-${isDev ? "dev" : "main"}`,
-      executionMode: ExecutionMode.PARALLEL,
+      executionMode: isDev ? ExecutionMode.PARALLEL : ExecutionMode.QUEUED,
     });
 
     if (isDev) {
