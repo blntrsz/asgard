@@ -7,8 +7,12 @@ import { SpaStack } from "../stacks/spa-stack";
 new AsgardApp({
   installCommands: ["npm i -g pnpm", "pnpm i"],
   commands: ["cd ./packages/app/", "pnpm cdk synth"],
-  create(scope) {
-    new ApiStack(scope, "api-stack");
-    new SpaStack(scope, "spa-stack");
+  create(scope, getScopedName) {
+    new ApiStack(scope, "api", {
+      stackName: getScopedName("api"),
+    });
+    new SpaStack(scope, "spa", {
+      stackName: getScopedName("spa"),
+    });
   },
 });
