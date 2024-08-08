@@ -9,17 +9,17 @@ export function getPipelineConfig(constructScope: Construct) {
 
   const scope = getScope(constructScope);
 
-  if (scope) {
+  if (scope === "main") {
     return {
-      name: scope === undefined ? mainPipeline : devPipeline,
-      scope: `pr-${scope}`,
-      isDev: scope !== undefined,
+      name: mainPipeline,
+      scope,
+      isDev: false,
     };
   }
 
   return {
-    name: mainPipeline,
-    scope: "main",
-    isDev: false,
+    name: devPipeline,
+    scope,
+    isDev: true,
   };
 }
