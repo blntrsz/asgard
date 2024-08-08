@@ -81,6 +81,7 @@ class Pipeline extends Stack {
       pipelineType: PipelineType.V2,
       pipelineName: props.name,
       executionMode: isDev ? ExecutionMode.PARALLEL : ExecutionMode.SUPERSEDED,
+      restartExecutionOnUpdate: true,
     });
 
     if (isDev) {
