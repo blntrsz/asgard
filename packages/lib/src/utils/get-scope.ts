@@ -39,7 +39,7 @@ export function getScope(scope?: Construct): number | undefined {
   const pullRequestTrigger =
     execution?.pipelineExecution?.trigger?.triggerDetail;
 
-  if (!pullRequestTrigger) return undefined;
+  if (!pullRequestTrigger.startsWith("arn")) return undefined;
 
   return JSON.parse(pullRequestTrigger).pullRequestId;
 }
