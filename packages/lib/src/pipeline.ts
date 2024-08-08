@@ -13,7 +13,7 @@ import {
 } from "aws-cdk-lib/aws-codepipeline";
 import { Construct } from "constructs";
 import { Stage, StageProps } from "./stage";
-import { App, AppProps, Stack, StackProps } from "aws-cdk-lib";
+import { App, AppProps, Stack } from "aws-cdk-lib";
 import { Rule } from "aws-cdk-lib/aws-events";
 import {
   getProjectName,
@@ -21,8 +21,8 @@ import {
   getRepositoryName,
   getMainBranch,
 } from "./utils/get-context";
-import { getScope } from "./utils/get-scope";
 import { PolicyStatement, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import { getPipelineConfig } from "./utils/get-pipeline-config";
 
 /**
  * Props fro the Asgard Application
@@ -40,52 +40,25 @@ export class AsgardApp extends App {
   constructor(props: AppProps & ApplicationProps) {
     super(props);
 
-    const scope = getScope(this);
-    const projectName = getProjectName(this);
+    const { isDev, name } = getPipelineConfig(this);
 
-    if (scope) {
-      new DevPipeline(this, `${projectName}-pipeline-dev`, props);
-    } else {
-      new MainPipeline(this, `${projectName}-pipeline-main`, props);
-    }
+    new Pipeline(this, name, {
+      ...props,
+      name,
+      isDev,
+    });
   }
 }
 
 const ACTION_NAME = "pipeline_pr_action";
 
-export class MainPipeline extends Stack {
-  constructor(
-    scope: Construct,
-    id: string,
-    props: ApplicationProps & StackProps,
-  ) {
-    super(scope, id, props);
-
-    new Pipeline(this, "main-pipeline", props);
-  }
-}
-
-export class DevPipeline extends Stack {
-  constructor(
-    scope: Construct,
-    id: string,
-    props: ApplicationProps & StackProps,
-  ) {
-    super(scope, id, props);
-
-    new Pipeline(this, "dev-pipeline", {
-      ...props,
-      isDev: true,
-    });
-  }
-}
-
-class Pipeline extends Construct {
+class Pipeline extends Stack {
   constructor(
     scope: Construct,
     id: string,
     props: ApplicationProps & {
       isDev?: boolean;
+      name: string;
     },
   ) {
     super(scope, id);
@@ -106,7 +79,7 @@ class Pipeline extends Construct {
 
     const rawPipeline = new CPipeline(this, "raw-pipeline", {
       pipelineType: PipelineType.V2,
-      pipelineName: `${projectName}-pipeline-${isDev ? "dev" : "main"}`,
+      pipelineName: props.name,
       executionMode: isDev ? ExecutionMode.PARALLEL : ExecutionMode.QUEUED,
     });
 

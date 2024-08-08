@@ -36,6 +36,10 @@ export function getScope(scope?: Construct): number | undefined {
     ).toString(),
   );
 
-  return JSON.parse(execution.pipelineExecution.trigger.triggerDetail)
-    .pullRequestId;
+  const pullRequestTrigger =
+    execution?.pipelineExecution?.trigger?.triggerDetail;
+
+  if (!pullRequestTrigger) return undefined;
+
+  return JSON.parse(pullRequestTrigger).pullRequestId;
 }
