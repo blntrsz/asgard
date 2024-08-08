@@ -9,6 +9,10 @@ export function getPipelineConfig(constructScope: Construct) {
 
   const scope = getScope(constructScope);
 
+  console.log({
+    SCOPE: scope,
+  });
+
   if (scope === "main") {
     return {
       name: mainPipeline,

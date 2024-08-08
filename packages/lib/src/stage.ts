@@ -12,6 +12,9 @@ export class Stage extends CDKStage {
     super(scope, id);
 
     const envName = getScope(this);
+    console.log({
+      SCOPE: envName,
+    });
     const projectName = getProjectName(this);
 
     function getScopedName(name: string) {

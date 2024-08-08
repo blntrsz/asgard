@@ -57,7 +57,7 @@ class Pipeline extends Stack {
     scope: Construct,
     id: string,
     props: ApplicationProps & {
-      isDev?: boolean;
+      isDev: boolean;
       name: string;
     },
   ) {
