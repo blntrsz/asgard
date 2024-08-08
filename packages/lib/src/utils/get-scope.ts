@@ -17,11 +17,10 @@ export function getScope(scope?: Construct): number | undefined {
     "",
   );
 
-  const actions = JSON.parse(
-    execSync(
-      `aws codepipeline list-action-executions --pipeline-name ${codepipeline}`,
-    ).toString(),
-  );
+  const getActions = execSync(
+    `aws codepipeline list-action-executions --pipeline-name ${codepipeline}`,
+  ).toString();
+  const actions = JSON.parse(getActions);
 
   const { pipelineExecutionId } = actions.actionExecutionDetails.find(
     (action: {
@@ -30,16 +29,15 @@ export function getScope(scope?: Construct): number | undefined {
       action.output.executionResult.externalExecutionId.includes(codeBuildID),
   );
 
-  const execution = JSON.parse(
-    execSync(
-      `aws codepipeline get-pipeline-execution --pipeline-name ${codepipeline} --pipeline-execution-id ${pipelineExecutionId}`,
-    ).toString(),
-  );
+  const getExecution = execSync(
+    `aws codepipeline get-pipeline-execution --pipeline-name ${codepipeline} --pipeline-execution-id ${pipelineExecutionId}`,
+  ).toString();
+  const execution = JSON.parse(getExecution);
 
   const pullRequestTrigger =
     execution?.pipelineExecution?.trigger?.triggerDetail;
 
-  if (!pullRequestTrigger.startsWith("arn")) return undefined;
+  if (pullRequestTrigger.startsWith("arn")) return undefined;
 
   return JSON.parse(pullRequestTrigger).pullRequestId;
 }

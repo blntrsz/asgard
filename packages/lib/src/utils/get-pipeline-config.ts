@@ -20,10 +20,6 @@ export function getPipelineConfig(constructScope: Construct) {
   const codepipeline = initiator.replace("codepipeline/", "");
 
   if (codepipeline === devPipeline) {
-    const scope = getScope(constructScope);
-
-    if (!scope) throw new Error("Scope is not defined in a dev pipeline");
-
     return {
       name: devPipeline,
       isDev: true,
