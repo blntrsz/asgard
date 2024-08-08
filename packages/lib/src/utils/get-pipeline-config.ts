@@ -4,22 +4,19 @@ import { getScope } from "./get-scope";
 
 export function getPipelineConfig(constructScope: Construct) {
   const projectName = getProjectName(constructScope);
-  const devPipeline = `${projectName}-pipeline-dev`;
-  const mainPipeline = `${projectName}-pipeline-main`;
 
   const scope = getScope(constructScope);
-  const runningContext = getRunningContext();
 
-  if (scope === "main" || runningContext === RunningContext.MAIN_PIPELINE) {
+  if (scope === "main") {
     return {
-      name: mainPipeline,
+      name: `${projectName}-pipeline-main`,
       scope: "main",
       isDev: false,
     };
   }
 
   return {
-    name: devPipeline,
+    name: `${projectName}-pipeline-dev`,
     scope,
     isDev: true,
   };

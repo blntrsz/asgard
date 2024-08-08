@@ -130,7 +130,6 @@ class Pipeline extends Stack {
     pipeline.addStage(
       new Stage(this, projectName, {
         create: props.create,
-        isDev: props.isDev,
       }),
     );
   }

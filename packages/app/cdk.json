@@ -21,6 +21,7 @@
     "repositoryName": "blntrsz/asgard",
     "mainBranch": "main",
     "connectionArn": "arn:aws:codeconnections:eu-central-1:021891617269:connection/b8d174cd-4d30-4f76-835d-cf554eb319c9",
+
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
     "@aws-cdk/core:checkSecretUsage": true,
     "@aws-cdk/core:target-partitions": [
