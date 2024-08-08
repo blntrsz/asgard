@@ -1,7 +1,7 @@
 import {
+  CodeBuildStep,
   CodePipeline,
   CodePipelineSource,
-  ShellStep,
 } from "aws-cdk-lib/pipelines";
 import {
   PipelineType,
@@ -105,7 +105,6 @@ class Pipeline extends Construct {
     );
 
     const rawPipeline = new CPipeline(this, "raw-pipeline", {
-      role,
       pipelineType: PipelineType.V2,
       pipelineName: `${projectName}-pipeline-${isDev ? "dev" : "main"}`,
       executionMode: ExecutionMode.PARALLEL,
@@ -174,7 +173,9 @@ class Pipeline extends Construct {
       });
     }
 
-    const synth = new ShellStep("synth", {
+    const synth = new CodeBuildStep("synth", {
+      commands: props.commands,
+      installCommands: props.installCommands,
       primaryOutputDirectory: "packages/app/cdk.out",
       input: CodePipelineSource.connection(
         getRepositoryName(this),
@@ -185,8 +186,7 @@ class Pipeline extends Construct {
           connectionArn: getConnectionArn(this),
         },
       ),
-      installCommands: props.installCommands,
-      commands: props.commands,
+      role,
     });
 
     const pipeline = new CodePipeline(this, "pipeline", {
