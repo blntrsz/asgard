@@ -8,8 +8,9 @@ export function getPipelineConfig(constructScope: Construct) {
   const mainPipeline = `${projectName}-pipeline-main`;
 
   const scope = getScope(constructScope);
+  const runningContext = getRunningContext();
 
-  if (scope === "main") {
+  if (scope === "main" || runningContext === RunningContext.MAIN_PIPELINE) {
     return {
       name: mainPipeline,
       scope: "main",

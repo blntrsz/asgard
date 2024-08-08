@@ -13,6 +13,8 @@ export function getScope(constructScope: Construct): "main" | string {
   const branchName =
     scope || execSync("git branch --show-current").toString().trim();
 
+  console.log({ branchName });
+
   if (branchName === "main") return "main";
 
   return sha1FromString(branchName);
