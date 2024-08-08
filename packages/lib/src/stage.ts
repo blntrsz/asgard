@@ -5,16 +5,14 @@ import { getProjectName } from "./utils/get-context";
 
 export interface StageProps {
   create(construct: Construct, getScopedName: (name: string) => string): void;
+  isDev: boolean;
 }
 
 export class Stage extends CDKStage {
   constructor(scope: Construct, id: string, props: StageProps) {
     super(scope, id);
 
-    const envName = getScope(this);
-    console.log({
-      SCOPE: envName,
-    });
+    const envName = props.isDev ? getScope(this) : "main";
     const projectName = getProjectName(this);
 
     function getScopedName(name: string) {

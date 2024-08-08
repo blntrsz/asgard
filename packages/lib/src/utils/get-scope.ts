@@ -10,11 +10,8 @@ function sha1FromString(input: string) {
 
 export function getScope(constructScope: Construct): "main" | string {
   const scope: string | undefined = constructScope.node.tryGetContext("scope");
-  console.log({ scope });
   const branchName =
     scope || execSync("git branch --show-current").toString().trim();
-
-  console.log({ branchName });
 
   if (branchName === "main") return "main";
 
