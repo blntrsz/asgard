@@ -23,3 +23,21 @@ export function getPipelineConfig(constructScope: Construct) {
     isDev: true,
   };
 }
+
+export enum RunningContext {
+  LOCAL = "local",
+  DEV_PIPELINE = "pev-pipeline",
+  MAIN_PIPELINE = "main-pipeline",
+}
+
+export function getRunningContext() {
+  const initiator = process.env.CODEBUILD_INITIATOR;
+
+  if (!initiator) return RunningContext.LOCAL;
+
+  const pipelineName = initiator.replace("codepipeline/", "");
+
+  if (pipelineName.endsWith("main")) return RunningContext.MAIN_PIPELINE;
+
+  return RunningContext.DEV_PIPELINE;
+}

@@ -80,7 +80,7 @@ class Pipeline extends Stack {
     const rawPipeline = new CPipeline(this, "raw-pipeline", {
       pipelineType: PipelineType.V2,
       pipelineName: props.name,
-      executionMode: isDev ? ExecutionMode.PARALLEL : ExecutionMode.QUEUED,
+      executionMode: isDev ? ExecutionMode.PARALLEL : ExecutionMode.SUPERSEDED,
     });
 
     if (isDev) {
