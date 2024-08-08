@@ -120,6 +120,9 @@ class Pipeline extends Stack {
     const synth = new CodeBuildStep("synth", {
       commands: props.commands,
       installCommands: props.installCommands,
+      env: {
+        "git-credential-helper": "yes",
+      },
       primaryOutputDirectory: "packages/app/cdk.out",
       input: CodePipelineSource.connection(
         getRepositoryName(this),
