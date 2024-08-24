@@ -1,0 +1,9 @@
+{
+  "executors": {
+    "cdk": {
+      "implementation": "./src/executors/cdk/executor",
+      "schema": "./src/executors/cdk/schema.json",
+      "description": "cdk executor"
+    }
+  }
+}

@@ -5,32 +5,8 @@
   "sourceRoot": "apps/well-of-mimir-infra/src",
   "tags": [],
   "targets": {
-    "synth": {
-      "executor": "@berenddeboer/nx-aws-cdk:cdk",
-      "options": {
-        "command": "synth"
-      }
-    },
-    "deploy": {
-      "executor": "@berenddeboer/nx-aws-cdk:cdk",
-      "options": {
-        "command": "deploy"
-      }
-    },
-    "diff": {
-      "executor": "@berenddeboer/nx-aws-cdk:cdk",
-      "options": {
-        "command": "diff"
-      }
-    },
-    "destroy": {
-      "executor": "@berenddeboer/nx-aws-cdk:cdk",
-      "options": {
-        "command": "destroy"
-      }
-    },
-    "lint": {
-      "command": "eslint apps/well-of-mimir-infra/**/*.ts"
+    "cdk": {
+      "executor": "@asgard/plugin:cdk"
     }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "app": "npx ts-node --prefer-ts-exts src/main.ts",
+  "app": "npx tsx src/main.ts",
   "output": "../../dist/apps/well-of-mimir-infra",
   "watch": {
     "include": ["**"],
