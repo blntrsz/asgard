@@ -30,7 +30,7 @@ export class DevPipeline<TEnvironment extends BaseEnvironment> extends Stack {
   constructor(
     scope: Construct,
     id: string,
-    props: Props<TEnvironment> & StackProps
+    props: Props<TEnvironment> & StackProps,
   ) {
     super(scope, id, props);
     this.props = props;
@@ -155,7 +155,7 @@ export class DevPipeline<TEnvironment extends BaseEnvironment> extends Stack {
           'codepipeline:GetPipelineExecution',
         ],
         resources: ['*'],
-      })
+      }),
     );
 
     return role;

@@ -1,7 +1,7 @@
-import { Stage as CDKStage, StageProps } from "aws-cdk-lib";
-import { Construct } from "constructs";
-import { BaseEnvironment, Props } from "../types";
-import { getScope, getScopedName } from "../utils/scope";
+import { Stage as CDKStage, StageProps } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import { BaseEnvironment, Props } from '../types';
+import { getScope, getScopedName } from '../utils/scope';
 
 export class Stage<TEnvironment extends BaseEnvironment> extends CDKStage {
   constructor(
@@ -12,7 +12,7 @@ export class Stage<TEnvironment extends BaseEnvironment> extends CDKStage {
     super(scope, id, props);
 
     const s = getScope(this);
-    this.node.setContext("scope", `${s}-${props.envName}`);
+    this.node.setContext('scope', `${s}-${props.envName}`);
 
     props.create(this, getScopedName(this, props.projectName), props.envValue!);
   }

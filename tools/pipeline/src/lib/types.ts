@@ -1,4 +1,4 @@
-import { Construct } from "constructs";
+import { Construct } from 'constructs';
 
 export type BaseEnvironment = {
   account: string;

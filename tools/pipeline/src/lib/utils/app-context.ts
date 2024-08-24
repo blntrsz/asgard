@@ -1,14 +1,14 @@
-import { AsgardApp } from "../app";
-import { BaseEnvironment, Props } from "../types";
-import { Context } from "./context";
+import { AsgardApp } from '../app';
+import { BaseEnvironment, Props } from '../types';
+import { Context } from './context';
 
 type Extract<Type> = Type extends AsgardApp<infer X> ? X : never;
 
-const AppContext = Context.create("AppContext");
+const AppContext = Context.create('AppContext');
 export const withAppContext = AppContext.with;
 export const useAppContext = AppContext.use;
 
-const EnvContext = Context.create("EnvContext");
+const EnvContext = Context.create('EnvContext');
 export const withEnvContext = EnvContext.with;
 export const useEnvContext = EnvContext.use;
 

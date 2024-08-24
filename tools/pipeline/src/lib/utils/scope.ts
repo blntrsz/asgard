@@ -1,6 +1,6 @@
-import { Construct } from "constructs";
+import { Construct } from 'constructs';
 
-export const SCOPE_CONTEXT_NAME = "scope";
+export const SCOPE_CONTEXT_NAME = 'scope';
 
 export const getScope = (scope: Construct): string => {
   const projectName: string | undefined =

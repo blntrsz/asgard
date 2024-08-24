@@ -2,22 +2,22 @@ import {
   CodePipeline,
   CodePipelineSource,
   ShellStep,
-} from "aws-cdk-lib/pipelines";
+} from 'aws-cdk-lib/pipelines';
 import {
   PipelineType,
   Pipeline,
   ExecutionMode,
-} from "aws-cdk-lib/aws-codepipeline";
-import { Construct } from "constructs";
-import { Stage } from "./stage";
-import { Stack, StackProps } from "aws-cdk-lib";
-import { getScope } from "../utils/scope";
-import { BaseEnvironment, Props } from "../types";
-import { DEPLOY_SCOPE } from "../constants";
-import { join } from "path";
-import { withEnvContext } from "../utils/app-context";
+} from 'aws-cdk-lib/aws-codepipeline';
+import { Construct } from 'constructs';
+import { Stage } from './stage';
+import { Stack, StackProps } from 'aws-cdk-lib';
+import { getScope } from '../utils/scope';
+import { BaseEnvironment, Props } from '../types';
+import { DEPLOY_SCOPE } from '../constants';
+import { join } from 'path';
+import { withEnvContext } from '../utils/app-context';
 
-const ACTION_NAME = "pipeline_pr_action";
+const ACTION_NAME = 'pipeline_pr_action';
 
 export class MainPipeline<TEnvironment extends BaseEnvironment> extends Stack {
   props: Props<TEnvironment>;
@@ -32,7 +32,7 @@ export class MainPipeline<TEnvironment extends BaseEnvironment> extends Stack {
     this.props = props;
     const envScope = getScope(this);
 
-    const pipeline = new Pipeline(this, "pipeline", {
+    const pipeline = new Pipeline(this, 'pipeline', {
       crossAccountKeys: this.isCrossRegion,
       pipelineType: PipelineType.V2,
       pipelineName: id,
@@ -40,7 +40,7 @@ export class MainPipeline<TEnvironment extends BaseEnvironment> extends Stack {
       restartExecutionOnUpdate: true,
     });
 
-    const codePipeline = new CodePipeline(this, "code-pipeline", {
+    const codePipeline = new CodePipeline(this, 'code-pipeline', {
       codePipeline: pipeline,
       selfMutation: true,
       synth: this.createShellStep(),
@@ -63,10 +63,10 @@ export class MainPipeline<TEnvironment extends BaseEnvironment> extends Stack {
   }
 
   private createShellStep() {
-    return new ShellStep("synth", {
+    return new ShellStep('synth', {
       commands: this.props.commands!,
       installCommands: this.props.installCommands,
-      primaryOutputDirectory: join(this.props.path, "cdk.out"),
+      primaryOutputDirectory: join(this.props.path, 'cdk.out'),
       input: CodePipelineSource.connection(
         this.props.repositoryName,
         this.props.mainBranch,

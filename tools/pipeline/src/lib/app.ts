@@ -1,14 +1,14 @@
-import { App, AppProps } from "aws-cdk-lib";
-import { Props, BaseEnvironment } from "./types";
-import { DevPipeline } from "./stacks/dev-pipeline";
-import { MainPipeline } from "./stacks/main-pipeline";
-import { getScope, getScopedName } from "./utils/scope";
-import { DEPLOY_SCOPE } from "./constants";
-import { withAppContext, withEnvContext } from "./utils/app-context";
+import { App, AppProps } from 'aws-cdk-lib';
+import { Props, BaseEnvironment } from './types';
+import { DevPipeline } from './stacks/dev-pipeline';
+import { MainPipeline } from './stacks/main-pipeline';
+import { getScope, getScopedName } from './utils/scope';
+import { DEPLOY_SCOPE } from './constants';
+import { withAppContext, withEnvContext } from './utils/app-context';
 
-export const DEV_PIPELINE_SUFFIX = "pipeline-dev";
-export const MAIN_PIPELINE_SUFFIX = "pipeline-main";
-export const MAIN_SCOPE = "main";
+export const DEV_PIPELINE_SUFFIX = 'pipeline-dev';
+export const MAIN_PIPELINE_SUFFIX = 'pipeline-main';
+export const MAIN_SCOPE = 'main';
 
 /**
  * An Instance of an Asgard application. Use as the main entry point for the CDK App, as the bin.
@@ -89,9 +89,9 @@ export class AsgardApp<TEnvironment extends BaseEnvironment> extends App {
   private createPropsWithDefaultValues(
     props: AppProps & Props<TEnvironment>,
   ): AppProps & Props<TEnvironment> {
-    const baseInstallCommands = ["n auto", "corepack enable", "pnpm i"];
-    const baseCommands = ["pnpm cdk synth -c scope=main"];
-    const baseDevCommands = ["pnpm asgard_dev_command"];
+    const baseInstallCommands = ['n auto', 'corepack enable', 'pnpm i'];
+    const baseCommands = ['npx cdk synth -c scope=main'];
+    const baseDevCommands = ['npx asgard_dev_command'];
     const cdToPath = `cd ${props.path}`;
 
     return {

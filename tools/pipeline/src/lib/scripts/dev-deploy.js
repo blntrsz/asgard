@@ -4,14 +4,14 @@ import {
   CodePipelineClient,
   GetPipelineExecutionCommand,
   ListActionExecutionsCommand,
-} from "@aws-sdk/client-codepipeline";
-import { execSync } from "child_process";
-import { z } from "zod";
+} from '@aws-sdk/client-codepipeline';
+import { execSync } from 'child_process';
+import { z } from 'zod';
 
 const codePipelineClient = new CodePipelineClient();
 
 function getPipelineName() {
-  return process.env.CODEBUILD_INITIATOR?.replace("codepipeline/", "");
+  return process.env.CODEBUILD_INITIATOR?.replace('codepipeline/', '');
 }
 
 // PULL_REQUEST_UPDATED example:
@@ -22,9 +22,9 @@ function getPipelineName() {
 
 const triggerDetailSchema = z.object({
   type: z.enum([
-    "PULL_REQUEST_UPDATED",
-    "PULL_REQUEST_MERGED",
-    "PULL_REQUEST_CREATED",
+    'PULL_REQUEST_UPDATED',
+    'PULL_REQUEST_MERGED',
+    'PULL_REQUEST_CREATED',
   ]),
   pullRequestId: z.string(),
 });
@@ -57,46 +57,46 @@ export async function getTrigger() {
   const triggerDetail =
     getPipelineExecution.pipelineExecution?.trigger?.triggerDetail;
 
-  if (triggerDetail?.startsWith("arn")) {
+  if (triggerDetail?.startsWith('arn')) {
     return {
       /**
        * @type {"MANUAL_EXECUTION"}
        */
-      type: "MANUAL_EXECUTION",
+      type: 'MANUAL_EXECUTION',
     };
   }
 
-  return triggerDetailSchema.parse(JSON.parse(triggerDetail ?? "{}"));
+  return triggerDetailSchema.parse(JSON.parse(triggerDetail ?? '{}'));
 }
 
 export async function runDevCommand() {
   const trigger = await getTrigger();
 
-  if (trigger.type === "MANUAL_EXECUTION") {
+  if (trigger.type === 'MANUAL_EXECUTION') {
     const pipelineName = getPipelineName();
     execSync(
-      `pnpm cdk deploy -c scope=deploy ${pipelineName} --require-approval=never`,
+      `npx cdk deploy -c scope=deploy ${pipelineName} --require-approval=never`,
     );
     return;
   }
 
   const scope = `pr-${trigger.pullRequestId}`;
 
-  if (trigger.type === "PULL_REQUEST_MERGED") {
-    execSync(`pnpm cdk destroy --all --force -c scope=${scope}`, {
-      stdio: "inherit",
+  if (trigger.type === 'PULL_REQUEST_MERGED') {
+    execSync(`npx cdk destroy --all --force -c scope=${scope}`, {
+      stdio: 'inherit',
     });
     return;
   }
 
   if (
-    trigger.type === "PULL_REQUEST_UPDATED" ||
-    trigger.type === "PULL_REQUEST_CREATED"
+    trigger.type === 'PULL_REQUEST_UPDATED' ||
+    trigger.type === 'PULL_REQUEST_CREATED'
   ) {
     execSync(
-      `pnpm cdk deploy --all --require-approval=never -c scope=${scope}`,
+      `npx cdk deploy --all --require-approval=never -c scope=${scope}`,
       {
-        stdio: "inherit",
+        stdio: 'inherit',
       },
     );
     return;

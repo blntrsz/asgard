@@ -1,1 +1,1 @@
-export const DEPLOY_SCOPE = "deploy";
+export const DEPLOY_SCOPE = 'deploy';
