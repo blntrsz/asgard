@@ -1,7 +1,7 @@
 {
   "name": "pipeline",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/pipeline/src",
+  "sourceRoot": "tools/pipeline/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -9,10 +9,10 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/pipeline",
-        "main": "libs/pipeline/src/index.ts",
-        "tsConfig": "libs/pipeline/tsconfig.lib.json",
-        "assets": ["libs/pipeline/*.md"]
+        "outputPath": "dist/tools/pipeline",
+        "main": "tools/pipeline/src/index.ts",
+        "tsConfig": "tools/pipeline/tsconfig.lib.json",
+        "assets": ["tools/pipeline/*.md"]
       }
     }
   }

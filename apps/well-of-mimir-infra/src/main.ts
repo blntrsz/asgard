@@ -13,7 +13,7 @@ export const app = new AsgardApp({
   repositoryName: 'blntrsz/asgard',
   mainBranch: 'main',
   connectionArn: CONNECTION_ARN,
-  path: 'apps/infra',
+  path: 'apps/well-of-mimir-infra',
   pipelineEnv: {
     account: '021891617269',
     region: 'eu-central-1',

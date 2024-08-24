@@ -1,4 +1,4 @@
-interface TaskAttributes {
+export interface TaskAttributes {
   name: string;
   description: string;
 }

@@ -16,7 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@asgard/common": ["libs/common/src/index.ts"],
-      "@asgard/pipeline": ["libs/pipeline/src/index.ts"],
+      "@asgard/pipeline": ["tools/pipeline/src/index.ts"],
       "@asgard/plugin": ["tools/plugin/src/index.ts"],
       "@asgard/task-management": ["libs/task-management/src/index.ts"]
     }
