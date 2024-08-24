@@ -4,7 +4,7 @@ import { HonoBindings } from './bindings';
 const app = new Hono<HonoBindings>();
 
 app.get('/', async (c) => {
-  c.json({
+  return c.json({
     message: 'hello',
   });
 });

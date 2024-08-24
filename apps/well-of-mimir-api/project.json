@@ -38,21 +38,7 @@
       }
     },
     "serve": {
-      "executor": "@nx/js:node",
-      "defaultConfiguration": "development",
-      "dependsOn": ["build"],
-      "options": {
-        "buildTarget": "well-of-mimir-api:build",
-        "runBuildTargetDependencies": false
-      },
-      "configurations": {
-        "development": {
-          "buildTarget": "well-of-mimir-api:build:development"
-        },
-        "production": {
-          "buildTarget": "well-of-mimir-api:build:production"
-        }
-      }
+      "command": "cd apps/well-of-mimir-api && npx tsx watch src/main.ts"
     },
     "test": {
       "executor": "@nx/vite:vitest",
