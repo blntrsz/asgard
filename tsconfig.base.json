@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@asgard/common": ["libs/common/src/index.ts"],
+      "@asgard/pipeline": ["libs/pipeline/src/index.ts"],
+      "@asgard/task-management": ["libs/task-management/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
