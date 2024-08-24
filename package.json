@@ -16,6 +16,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "tslib": "^2.7.0",
+    "tsx": "^4.17.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -37,7 +38,7 @@
     "@playwright/test": "^1.46.1",
     "@swc-node/register": "~1.10.9",
     "@swc/cli": "~0.4.0",
-    "@swc/core": "~1.7.14",
+    "@swc/core": "~1.7.18",
     "@swc/helpers": "~0.5.12",
     "@testing-library/react": "16.0.0",
     "@types/jest": "^29.5.12",

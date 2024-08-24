@@ -66,7 +66,7 @@ export class MainPipeline<TEnvironment extends BaseEnvironment> extends Stack {
     return new ShellStep('synth', {
       commands: this.props.commands!,
       installCommands: this.props.installCommands,
-      primaryOutputDirectory: join(this.props.path, 'cdk.out'),
+      primaryOutputDirectory: join('dist', this.props.path),
       input: CodePipelineSource.connection(
         this.props.repositoryName,
         this.props.mainBranch,
