@@ -1,9 +1,10 @@
-export interface TaskAttributes {
+export type TaskAttributes = {
   name: string;
   description: string;
-}
+};
 
 export class Task {
+  static type = 'tasks';
   constructor(private readonly _attributes: TaskAttributes) {}
 
   attributes() {

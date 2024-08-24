@@ -36,6 +36,13 @@
       "options": {
         "targetName": "e2e"
       }
+    },
+    {
+      "plugin": "@nx/jest/plugin",
+      "options": {
+        "targetName": "test"
+      },
+      "exclude": ["apps/well-of-mimir-migrator-e2e/**/*"]
     }
   ],
   "targetDefaults": {
